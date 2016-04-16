@@ -6,7 +6,7 @@ package expression.exceptions;
 
 public class Main {
     public static void main(String args[]) throws Exception {
-        String str = "2 + 4 - (1 * 110) / x";
-        System.out.print(new ExpressionParser().parse(str).evaluate(2, 1, 1) + "\n");
+        String str = "------------1";
+        System.out.print(new ExpressionParser().parse(str).evaluate(0, 0, 0) + "\n");
     }
 }

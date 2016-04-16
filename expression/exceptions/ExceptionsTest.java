@@ -17,6 +17,7 @@ import static expression.Util.*;
  * @author Niyaz Nigmatullin
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
+
 public class ExceptionsTest {
     private static long total;
 

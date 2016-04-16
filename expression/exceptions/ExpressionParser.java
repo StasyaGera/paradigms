@@ -1,62 +1,61 @@
 package expression.exceptions;
 
-import expression.*;
+import expression.TripleExpression;
 import expression.exceptions.ParserException.InputMismatch;
 import expression.exceptions.Token.Lexem;
-
-import java.util.Arrays;
-import java.util.Stack;
+import static expression.exceptions.Token.*;
 
 /**
  * Created by penguinni on 28.03.16.
  */
 
 public class ExpressionParser implements Parser {
-    static Stack<String> constants = new Stack<>();
-    static Stack<Lexem> operations = new Stack<>();
+    static Tokenizer tokenizer;
+    static Lexem previous;
 
-    private Tokeniser tokeniser;
+    private Lexem current;
+    private int parenCnt;
 
-    private void getOperationsStack() throws ParserException {
-        Lexem lexem;
-        int parenCnt = 0;
+    private void checkNeighbourhood(Lexem left, Lexem right) throws ParserException {
+        if ((isNumeric(left) || (left == Lexem.C_PAREN)) && (
+                isNumeric(right) || right == Lexem.O_PAREN || isUnary(right)
+        ) || left == Lexem.C_PAREN && (
+                isNumeric(right) || isUnary(right)
+        )
+                ) {
 
-        operations.push(Lexem.END);
+            throw new ParserException(InputMismatch.NO_OPERATOR);
+        }
 
-        while (tokeniser.hasTokens) {
-            lexem = tokeniser.nextToken();
+        if ((left == Lexem.START) && isBinary(right)) {
+            throw new ParserException(InputMismatch.NO_FIRST_ARGUMENT);
+        }
 
-            if ((lexem == Lexem.SUB) && (operations.peek() == Lexem.CONSTANT)) {
-                constants.push("-" + constants.pop());
-                continue;
-            } else if (lexem == Lexem.C_PAREN) {
-                parenCnt++;
-            } else if (lexem == Lexem.O_PAREN) {
-                if (parenCnt == 0) {
-                    throw new ParserException(InputMismatch.NO_CLOSING_PAREN);
-                }
-                parenCnt--;
+        if (isBinary(left) || isUnary(left)) {
+            if (isBinary(right) || right == Lexem.C_PAREN) {
+                throw new ParserException(InputMismatch.NO_MID_ARGUMENT);
             }
-
-            if ((operations.peek() == Lexem.SUB) && (Arrays.asList(Lexem.SUB_TO_NEG).contains(lexem))) {
-                operations.pop();
-                operations.push(Lexem.NEG);
+            if (right == Lexem.END) {
+                throw new ParserException(InputMismatch.NO_LAST_ARGUMENT);
             }
-
-            Token.checkNeighbourhood(lexem, operations.peek());
-            operations.push(lexem);
         }
 
-        if (parenCnt > 0) {
-            throw new ParserException(InputMismatch.NO_OPENING_PAREN);
+        if (left == Lexem.O_PAREN && isBinary(right)) {
+            throw new ParserException(InputMismatch.NO_MID_ARGUMENT);
         }
+    }
 
-        if (operations.peek() == Lexem.SUB) {
-            operations.pop();
-            operations.push(Lexem.NEG);
+    private void getNextToken() throws ParserException {
+        previous = current;
+        if (tokenizer.hasTokens) {
+            current = tokenizer.nextToken();
+            if ((current == Lexem.C_PAREN) && (parenCnt == 0)) {
+                throw new ParserException(InputMismatch.NO_OPENING_PAREN);
+            }
+        } else {
+            current = Lexem.END;
         }
-
-        Token.checkNeighbourhood(Lexem.START, operations.peek());
+        checkNeighbourhood(previous, current);
     }
 
     private TripleExpression parse(int priority) throws Exception {
@@ -65,35 +64,51 @@ public class ExpressionParser implements Parser {
         if (priority < Token.MAX_PRIORITY) {
             operand = parse(priority + 1);
         } else {
-            if (operations.peek() == Lexem.O_PAREN) {
-                operations.pop();
+             getNextToken();
+
+            if (current == Lexem.O_PAREN) {
+                parenCnt++;
                 TripleExpression result = parse(1);
-                if (operations.peek() == Lexem.C_PAREN) {
-                    operations.pop();
-                }
-                return result;
-            } else {
-                if (Token.isUnary(operations.peek())) {
-                    return operations.pop().creator.create(parse(Token.MAX_PRIORITY));
+
+                if (current == Lexem.C_PAREN) {
+                    parenCnt--;
+                    getNextToken();
                 } else {
-                    return operations.pop().creator.create();
+                    throw new ParserException(InputMismatch.NO_CLOSING_PAREN);
+                }
+
+                return result;
+            } else if (current == Lexem.C_PAREN) {
+                throw new ParserException(InputMismatch.NO_OPENING_PAREN);
+            } else {
+                if (isUnary(current)) {
+                    return current.creator.create(parse(Token.MAX_PRIORITY));
+                } else {
+                    getNextToken();
+                    return previous.creator.create();
                 }
             }
         }
 
-        while (operations.peek() != Lexem.END) {
-            if (operations.peek().priority == priority) {
-                operand = operations.pop().creator.create(operand, parse(priority + 1));
+        while (current != Lexem.END) {
+            if (current.priority == priority) {
+                operand = current.creator.create(operand, parse(priority + 1));
             } else {
                 return operand;
             }
         }
+
+        if (parenCnt > 0) {
+            throw new ParserException(InputMismatch.NO_CLOSING_PAREN);
+        }
+
         return operand;
     }
 
     public TripleExpression parse(String input) throws Exception {
-        tokeniser = new Tokeniser(input);
-        getOperationsStack();
+        this.current = Lexem.START;
+        this.parenCnt = 0;
+        tokenizer = new Tokenizer(input);
 
         return parse(1);
     }
