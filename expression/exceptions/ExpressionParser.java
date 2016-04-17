@@ -24,7 +24,10 @@ public class ExpressionParser implements Parser {
         )
                 ) {
 
-            throw new ParserException(InputMismatch.NO_OPERATOR);
+            if (right == Lexem.CONSTANT) {
+                throw new ParserException(InputMismatch.NO_OPERATOR, tokenizer.index - tokenizer.constant.length() - 1);
+            }
+            throw new ParserException(InputMismatch.NO_OPERATOR, tokenizer.index - right.key.length() - 1);
         }
 
         if ((left == Lexem.START) && isBinary(right)) {
@@ -33,7 +36,7 @@ public class ExpressionParser implements Parser {
 
         if (isBinary(left) || isUnary(left)) {
             if (isBinary(right) || right == Lexem.C_PAREN) {
-                throw new ParserException(InputMismatch.NO_MID_ARGUMENT);
+                throw new ParserException(InputMismatch.NO_MID_ARGUMENT, tokenizer.index - right.key.length() - 1);
             }
             if (right == Lexem.END) {
                 throw new ParserException(InputMismatch.NO_LAST_ARGUMENT);
@@ -41,7 +44,7 @@ public class ExpressionParser implements Parser {
         }
 
         if (left == Lexem.O_PAREN && isBinary(right)) {
-            throw new ParserException(InputMismatch.NO_MID_ARGUMENT);
+            throw new ParserException(InputMismatch.NO_MID_ARGUMENT, tokenizer.index - right.key.length() - 1);
         }
     }
 

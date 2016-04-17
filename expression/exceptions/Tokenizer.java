@@ -14,10 +14,10 @@ import static java.lang.Character.isWhitespace;
 
 class Tokenizer {
     boolean hasTokens;
+    int index;
+    String constant;
 
-    private int index;
     private String input;
-    private String constant;
 
     Tokenizer(String input) {
         this.input = input;
@@ -94,7 +94,7 @@ class Tokenizer {
             }
         }
 
-        throw new ParserException(ParserException.InputMismatch.UNEXPECTED_SYM);
+        throw new ParserException(ParserException.InputMismatch.UNEXPECTED_SYM, index - name.length());
     }
 
     Lexem nextToken() throws ParserException {
@@ -135,6 +135,6 @@ class Tokenizer {
             return lexemByName(word);
         }
 
-        throw new ParserException(ParserException.InputMismatch.UNEXPECTED_SYM);
+        throw new ParserException(ParserException.InputMismatch.UNEXPECTED_SYM, index);
     }
 }
