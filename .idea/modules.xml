@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/JavaHometasks/BinarySearch/BinarySearch.iml" filepath="$PROJECT_DIR$/JavaHometasks/BinarySearch/BinarySearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ClojureHometasks/ClojureHometasks.iml" filepath="$PROJECT_DIR$/ClojureHometasks/ClojureHometasks.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaHometasks/Expression/Expression.iml" filepath="$PROJECT_DIR$/JavaHometasks/Expression/Expression.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaHometasks/Queue/Queue.iml" filepath="$PROJECT_DIR$/JavaHometasks/Queue/Queue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaHometasks/SHA256/SHA256.iml" filepath="$PROJECT_DIR$/JavaHometasks/SHA256/SHA256.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/paradigm.iml" filepath="$PROJECT_DIR$/.idea/paradigm.iml" />
+    </modules>
+  </component>
+</project>
