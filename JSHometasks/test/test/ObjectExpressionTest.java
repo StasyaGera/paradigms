@@ -2,8 +2,6 @@ package test;
 
 import java.util.List;
 
-import static test.Util.*;
-
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
@@ -21,7 +19,7 @@ public class ObjectExpressionTest extends BaseTest<JSEngine> {
             .unary("negate", "Negate", "negate", a -> -a);
     public final double D = 1e-4;
 
-    final List<int[]> simplifications = list(
+    final List<int[]> simplifications = Util.list(
             new int[]{1, 1, 1},
             new int[]{1, 1, 1},
             new int[]{1, 1, 1},
@@ -43,7 +41,7 @@ public class ObjectExpressionTest extends BaseTest<JSEngine> {
     }
 
     protected ObjectExpressionTest(final boolean testParsing, final boolean testSimplify, final Language language) {
-        super(new JSEngine("objectExpr1.js", ".evaluate"), language, testParsing);
+        super(new JSEngine("/home/penguinni/Documents/Prog/paradigm/JSHometasks/src/objectExpr1.js", ".evaluate"), language, testParsing);
         this.testSimplify = testSimplify;
     }
 
@@ -75,7 +73,7 @@ public class ObjectExpressionTest extends BaseTest<JSEngine> {
                 final Engine.Result<String> result = engine.parsedToString();
                 final int length = result.value.length();
                 final int expected = simplifications[variable];
-                assertTrue("Simplified length too long: " + length + " instead of " + expected + result.context, length <= expected);
+                Util.assertTrue("Simplified length too long: " + length + " instead of " + expected + result.context, length <= expected);
             }
             for (int i = 1; i <= N; i += 1) {
                 final double di = variable == 0 ? D : 0;
@@ -106,7 +104,7 @@ public class ObjectExpressionTest extends BaseTest<JSEngine> {
     private void testToString(final String expression, final String expected) {
         engine.parse(expression);
         final Engine.Result<String> result = engine.parsedToString();
-        assertEquals(result.context, result.value, expected);
+        Util.assertEquals(result.context, result.value, expected);
     }
 
     public static void main(final String... args) {

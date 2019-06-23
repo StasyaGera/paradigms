@@ -1,7 +1,5 @@
 package test;
 
-import static test.Util.list;
-
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
@@ -53,7 +51,7 @@ public class ModifiedPrefixParserTest extends PrefixParserTest {
         public AdvancedLanguage(final Dialect parsed, final Dialect unparsed, final Ops ops) {
             super(parsed, unparsed, ops);
 
-            tests.addAll(list(
+            tests.addAll(Util.list(
                     u("exp", b("+", vx, vy)),
                     u("exp", b("/", u("exp", vz), b("+", vx, vy))),
                     u("atan", b("-", vx, vy)),

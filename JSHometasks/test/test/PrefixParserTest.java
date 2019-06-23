@@ -1,7 +1,5 @@
 package test;
 
-import static test.Util.randomInt;
-
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
@@ -33,12 +31,12 @@ public class PrefixParserTest extends ObjectExpressionTest {
         super.test(removeSpaces(parsed), unparsed);
 
         for (int i = 0; i < 1 + Math.min(10, 200 / unparsed.length()); i++) {
-            final int index = randomInt(unparsed.length());
+            final int index = Util.randomInt(unparsed.length());
             final char c = unparsed.charAt(index);
             if (!Character.isDigit(c) && !Character.isWhitespace(c) && c != '-'){
                 assertParsingError(unparsed.substring(0, index), "<SYMBOL REMOVED>", unparsed.substring(index + 1));
             }
-            final char newC = INSERTIONS.charAt(randomInt(INSERTIONS.length()));
+            final char newC = INSERTIONS.charAt(Util.randomInt(INSERTIONS.length()));
             if (!Character.isDigit(c) && c != '-') {
                 assertParsingError(unparsed.substring(0, index), "<SYMBOL INSERTED -->", newC + unparsed.substring(index));
             }

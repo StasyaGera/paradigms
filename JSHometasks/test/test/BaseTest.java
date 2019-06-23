@@ -105,9 +105,9 @@ public abstract class BaseTest<E extends Engine> {
         if (operator <= 0) {
             return generateP(vars, depth);
         } else if (operator <= 1) {
-            return language.unary(random(language.unary), generateP(vars, depth));
+            return language.unary(Util.random(language.unary), generateP(vars, depth));
         } else {
-            return language.binary(random(language.binary), generateP(vars, depth), generateP(vars, depth));
+            return language.binary(Util.random(language.binary), generateP(vars, depth), generateP(vars, depth));
         }
     }
 
